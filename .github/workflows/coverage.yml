@@ -1,0 +1,47 @@
+name: CI / Coverage
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install deps
+        uses: ./.github/workflows/composite/crystal
+
+      - name: Build
+        run: crystal build --debug --no-color spec/mockito.spec.cr
+
+      - name: Install kcov
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y binutils-dev libssl-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
+          curl -L https://github.com/SimonKagstrom/kcov/releases/download/v40/kcov-amd64.tar.gz | sudo tar xz -C /
+
+      - name: Collect coverage
+        run: kcov --exit-first-process --coveralls-id=dry-run --include-path=./src --strip-path=$(pwd)/ .coverage mockito.spec
+
+      - name: Send reports to Codeclimate
+        uses: paambaati/codeclimate-action@v3.0.0
+        if: ${{ hashFiles('.coverage/**/coveralls.out') }}
+        env:
+          CC_TEST_REPORTER_ID: 7153a9ad57c1bcdf11a627e91f609053c3c0b15827dc17762eefda77e37e76e9
+        with:
+          coverageLocations: .coverage/**/coveralls.out:excoveralls

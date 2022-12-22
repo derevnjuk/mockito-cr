@@ -1,0 +1,42 @@
+{
+  "name": "mockito-cr",
+  "version": "0.0.1",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/derevnjuk/mockito-cr.git"
+  },
+  "engines": {
+    "node": ">=16",
+    "npm": "^8.1.0"
+  },
+  "author": {
+    "name": "Artem Derevnjuk",
+    "email": "aredere@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/derevnjuk/mockito-cr/issues"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "scripts": {
+    "is-ci": "is-ci",
+    "husky": "husky",
+    "semantic-release": "semantic-release",
+    "prepare": "is-ci || husky install"
+  },
+  "homepage": "https://github.com/derevnjuk/mockito-cr#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^17.3.0",
+    "@commitlint/config-conventional": "^17.3.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "husky": "^8.0.2",
+    "is-ci": "^3.0.1",
+    "semantic-release": "~19.0.5"
+  }
+}

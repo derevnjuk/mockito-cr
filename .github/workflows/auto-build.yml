@@ -1,0 +1,47 @@
+name: CI / Automated testing
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    branches:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install deps
+        uses: ./.github/workflows/composite/crystal
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: install-deps
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install deps
+        uses: ./.github/workflows/composite/crystal
+
+      - name: Check formatting
+        run: crystal tool format --no-color --check
+
+      - name: Lint
+        run: ./bin/ameba --no-color
+
+      - name: Run tests
+        run: crystal spec --no-color --order=random
+

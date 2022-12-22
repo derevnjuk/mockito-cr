@@ -1,0 +1,19 @@
+name: 'Crystal'
+description: 'Installs Crystal shards'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Crystal
+      uses: crystal-lang/install-crystal@v1
+
+    - name: Dependency Caching
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/shards
+        key: ${{ runner.os }}-shards-${{ hashFiles('shard.yml') }}
+        restore-keys: ${{ runner.os }}-shards-
+
+    - name: Install shards
+      shell: bash
+      run: shards install --frozen --no-color

@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+./bin/ameba --no-color $1
+
+crystal tool format --no-color $1

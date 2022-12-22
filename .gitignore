@@ -1,0 +1,6 @@
+/docs/
+/node_modules
+/lib/
+/bin/
+/.shards/
+*.dwarf
